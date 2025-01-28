@@ -1,0 +1,30 @@
+/* site.css */
+
+body {
+	margin-top: 70px; /* example offset if your nav is fixed */
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-brand {
+	font-weight: bold;
+}
+
+.alert {
+	margin-top: 10px;
+}
+
+.table th, .table td {
+	vertical-align: middle;
+}
+
+/* Example class for custom highlights */
+.highlight {
+	background-color: #fffdcc;
+}
+
+/* Example media query for responsive tweaks */
+@media (max-width: 576px) {
+	body {
+		margin-top: 0;
+	}
+}

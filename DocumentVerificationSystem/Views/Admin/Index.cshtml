@@ -1,0 +1,36 @@
+﻿@model IEnumerable<DocumentVerificationSystem.Models.User>
+@{
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Admin Dashboard</h2>
+
+@if (TempData["Message"] != null)
+{
+  <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Roll Number</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var candidate in Model)
+    {
+      <tr>
+        <td>@candidate.Email</td>
+        <td>@candidate.RollNumber</td>
+        <td>
+          <a class="btn btn-primary"
+             href="@Url.Action("Review","Admin", new { candidateId = candidate.Id })">
+            Review
+          </a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

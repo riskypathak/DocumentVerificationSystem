@@ -1,0 +1,41 @@
+﻿@model IEnumerable<DocumentVerificationSystem.Models.DocumentCategory>
+
+@{
+  Layout = "~/Views/Shared/_Layout.cshtml";
+  var overallStatus = ViewBag.OverallStatus as string ?? "Unknown";
+}
+
+<h2>Candidate Dashboard</h2>
+<p><strong>Overall Submission Status:</strong> @overallStatus</p>
+
+@if (TempData["Message"] != null)
+{
+  <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var cat in Model)
+    {
+      <tr>
+        <td>@cat.CategoryName</td>
+        <td>
+          <a class="btn btn-primary"
+             href="@Url.Action("UploadDocuments", "Candidate", new { categoryId = cat.Id })">
+            View/Upload
+          </a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<form method="post" action="@Url.Action("SubmitAllDocuments","Candidate")">
+  <button class="btn btn-success">Submit All Documents</button>
+</form>
