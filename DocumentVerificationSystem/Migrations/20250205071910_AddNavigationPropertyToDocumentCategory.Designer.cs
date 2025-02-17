@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentVerificationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250116074421_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250205071910_AddNavigationPropertyToDocumentCategory")]
+    partial class AddNavigationPropertyToDocumentCategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,7 +112,7 @@ namespace DocumentVerificationSystem.Migrations
             modelBuilder.Entity("DocumentVerificationSystem.Models.Document", b =>
                 {
                     b.HasOne("DocumentVerificationSystem.Models.DocumentCategory", "Category")
-                        .WithMany()
+                        .WithMany("Documents")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -126,6 +126,11 @@ namespace DocumentVerificationSystem.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DocumentVerificationSystem.Models.DocumentCategory", b =>
+                {
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

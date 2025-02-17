@@ -109,7 +109,7 @@ namespace DocumentVerificationSystem.Migrations
             modelBuilder.Entity("DocumentVerificationSystem.Models.Document", b =>
                 {
                     b.HasOne("DocumentVerificationSystem.Models.DocumentCategory", "Category")
-                        .WithMany()
+                        .WithMany("Documents")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -123,6 +123,11 @@ namespace DocumentVerificationSystem.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DocumentVerificationSystem.Models.DocumentCategory", b =>
+                {
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

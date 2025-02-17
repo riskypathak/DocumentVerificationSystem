@@ -1,41 +1,103 @@
 ﻿@model IEnumerable<DocumentVerificationSystem.Models.DocumentCategory>
 
 @{
-  Layout = "~/Views/Shared/_Layout.cshtml";
-  var overallStatus = ViewBag.OverallStatus as string ?? "Unknown";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var overallStatus = ViewBag.OverallStatus as string ?? "Unknown";
+
+    string buttonClass = overallStatus switch
+    {
+        "Verified" => "btn btn-outline-success mx-2",
+        "Under Review" => "btn btn-outline-info mx-2",
+        "Action Required" => "btn btn-outline-danger mx-2",
+        "Submitted" => "btn btn-outline-primary mx-2",
+        "Not Uploaded" => "btn btn-outline-secondary mx-2",
+        _ => "btn btn-outline-secondary mx-2"
+    };
+
+    var documentsByCategory = ViewBag.DocumentsByCategory as Dictionary<int, List<DocumentVerificationSystem.Models.Document>>
+        ?? new Dictionary<int, List<DocumentVerificationSystem.Models.Document>>();
 }
 
-<h2>Candidate Dashboard</h2>
-<p><strong>Overall Submission Status:</strong> @overallStatus</p>
+<h2 class="mb-3">Candidate Dashboard</h2>
+<p><strong>Overall Submission Status:</strong> <button class="@buttonClass">@overallStatus</button></p>
 
-@if (TempData["Message"] != null)
-{
-  <div class="alert alert-success">@TempData["Message"]</div>
-}
+<a href="@Url.Action("Test", "Candidate")" class="btn btn-outline-secondary">Test</a>
 
 <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Category</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach (var cat in Model)
-    {
-      <tr>
-        <td>@cat.CategoryName</td>
-        <td>
-          <a class="btn btn-primary"
-             href="@Url.Action("UploadDocuments", "Candidate", new { categoryId = cat.Id })">
-            View/Upload
-          </a>
-        </td>
-      </tr>
-    }
-  </tbody>
+    <thead class="table-light">
+        <tr>
+            <th>Category</th>
+            <th>Document Title</th>
+            <th>Status</th>
+            <th>Admin Comments</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cat in Model)
+        {
+            if (documentsByCategory.ContainsKey(cat.Id) && documentsByCategory[cat.Id].Any())
+            {
+                foreach (var doc in documentsByCategory[cat.Id])
+                {
+                    <tr>
+                        <td><strong>@cat.CategoryName</strong></td> 
+                        <td>
+                            <a href="@doc.FilePath" target="_blank">@doc.Title</a>
+                        </td>
+                        <td>
+                            @if (doc.Status == DocumentVerificationSystem.Models.DocumentStatus.Verified)
+                            {
+                                <span class="badge bg-success">Verified</span>
+                            }
+                            else if (doc.Status == DocumentVerificationSystem.Models.DocumentStatus.Rejected)
+                            {
+                                <span class="badge bg-danger">Rejected</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(doc.AdminComments))
+                            {
+                                <span class="text-danger"><strong>⚠ @doc.AdminComments</strong></span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No comments</span>
+                            }
+                        </td>
+                        <td>
+                            @if (doc.Status == DocumentVerificationSystem.Models.DocumentStatus.Verified)
+                            {
+                                <button class="btn btn-sm btn-outline-success" disabled>Verified</button>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm btn-outline-primary" href="@Url.Action("UploadDocuments", "Candidate", new { categoryId = cat.Id })">
+                                    View/Upload
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td><strong>@cat.CategoryName</strong></td>
+                    <td><span class="text-muted">No documents uploaded</span></td>
+                    <td><span class="text-muted">N/A</span></td> 
+                    <td><span class="text-muted">No comments</span></td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary" href="@Url.Action("UploadDocuments", "Candidate", new { categoryId = cat.Id })">
+                            View/Upload
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
 </table>
-
-<form method="post" action="@Url.Action("SubmitAllDocuments","Candidate")">
-  <button class="btn btn-success">Submit All Documents</button>
-</form>

@@ -13,7 +13,7 @@ namespace DocumentVerificationSystem.Models
 	{
 		public int Id { get; set; }
 		public string Title { get; set; } = default!;
-		public string FilePath { get; set; } = default!;
+        public string FilePath { get; set; } = default!;
 		public DocumentStatus Status { get; set; }
 		public string? AdminComments { get; set; }
 

@@ -1,0 +1,26 @@
+﻿<div class="modal fade" id="finalizeSubmissionModal" tabindex="-1" aria-labelledby="finalizeSubmissionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="finalizeSubmissionModalLabel">Finalize Decisions</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Confirm Submission for Candidate:</strong> <span id="candidateName"></span> (Roll #: <span id="candidateRoll"></span>)</p>
+                <p>You are about to:</p>
+                <ul>
+                    <li>Mark <span id="verifiedCount"></span> out of <span id="totalDocuments"></span> documents as <strong>Verified</strong>.</li>
+                    <li>Send back <span id="rejectedCount"></span> documents as <strong>Rejected</strong>.</li>
+                </ul>
+                <p>Once submitted, the candidate will be notified. Do you want to continue?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="@Url.Action("FinalizeSubmission","Admin")">
+                    <input type="hidden" name="candidateId" id="finalizeCandidateId" />
+                    <button type="submit" class="btn btn-success">Yes, Finalize</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
