@@ -5,11 +5,6 @@
 
 <h2>Admin Dashboard</h2>
 
-@if (TempData["Message"] != null)
-{
-  <div class="alert alert-success">@TempData["Message"]</div>
-}
-
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -22,13 +17,25 @@
     @foreach (var candidate in Model)
     {
       <tr>
-        <td>@candidate.Email</td>
+        <td>
+            @if (candidate.HasUploadedDocuments && !candidate.IsFinalized)
+            {
+                <span class="badge bg-warning text-dark me-2">New Docs 📂</span>
+            }
+
+            @candidate.Email
+
+            @if (candidate.IsFinalized)
+            {
+                <span class="badge bg-success ms-2">Finalized ✅</span>
+            }
+        </td>
         <td>@candidate.RollNumber</td>
         <td>
-          <a class="btn btn-primary"
-             href="@Url.Action("Review","Admin", new { candidateId = candidate.Id })">
-            Review
-          </a>
+            <a class="btn @(candidate.IsFinalized ? "btn-secondary" : "btn-primary")"
+                href="@Url.Action(candidate.IsFinalized ? "ViewDoc" : "Review", "Admin", new { candidateId = candidate.Id })">
+                @(candidate.IsFinalized ? "View Documents" : "Review Documents")
+            </a>
         </td>
       </tr>
     }

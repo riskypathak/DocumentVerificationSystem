@@ -16,8 +16,6 @@ namespace DocumentVerificationSystem.Controllers
             _db = db;
             _env = env;
         }
-
-        // GET: /Candidate/Dashboard
         public IActionResult Dashboard()
         {
             var currentUser = GetCurrentUser();
@@ -43,6 +41,7 @@ namespace DocumentVerificationSystem.Controllers
                 overallStatus = "Not Uploaded";
 
             ViewBag.OverallStatus = overallStatus;
+            ViewBag.IsFinalized = currentUser.IsFinalized;
 
             var categories = _db.DocumentCategories.ToList();
 
@@ -60,6 +59,7 @@ namespace DocumentVerificationSystem.Controllers
 
             ViewBag.AdminComments = adminComments;
             ViewBag.DocumentsByCategory = documentsByCategory;
+            ViewBag.Documents = docs;
 
             return View(categories);
         }
@@ -77,15 +77,16 @@ namespace DocumentVerificationSystem.Controllers
             if (category == null) return NotFound("Category not found.");
 
             var docs = _db.Documents
-                    .Where(d => d.UserId == currentUser.Id && d.CategoryId == category.Id)
-                    .ToList();
+                        .Where(d => d.UserId == currentUser.Id)
+                        .GroupBy(d => new { d.Title, d.CategoryId })
+                        .Select(g => g.OrderByDescending(d => d.Id).FirstOrDefault())
+                        .ToList();
 
             ViewBag.Category = category;
             ViewBag.UserDocs = docs;
             return View();
         }
 
-        [HttpPost]
         [HttpPost]
         public IActionResult UploadDocuments(int categoryId, string[] docTitles, IFormFile[] files)
         {
@@ -96,7 +97,7 @@ namespace DocumentVerificationSystem.Controllers
             if (category == null) return NotFound("Category not found.");
 
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
-            const int maxFileSize = 1048576; // 1 MB in bytes
+            const int maxFileSize = 1048576;
 
             var hashedFolderName = GetHashedFolderName(currentUser.Id);
             var hashedFolderPath = Path.Combine(_env.WebRootPath, "Uploads", hashedFolderName);
@@ -139,7 +140,13 @@ namespace DocumentVerificationSystem.Controllers
                                                             && d.CategoryId == categoryId
                                                             && d.Title == title);
 
-                    if (existingDoc == null)
+                    if (existingDoc != null)
+                    {
+                        existingDoc.FilePath = $"/Uploads/{hashedFolderName}/{uniqueFileName}";
+                        existingDoc.Status = DocumentStatus.Pending;
+                        existingDoc.AdminComments = null;
+                    }
+                    else
                     {
                         var newDoc = new Document
                         {
@@ -150,12 +157,6 @@ namespace DocumentVerificationSystem.Controllers
                             CategoryId = categoryId
                         };
                         _db.Documents.Add(newDoc);
-                    }
-                    else
-                    {
-                        existingDoc.FilePath = $"/Uploads/{hashedFolderName}/{uniqueFileName}";
-                        existingDoc.Status = DocumentStatus.Pending;
-                        existingDoc.AdminComments = null;
                     }
                 }
             }
@@ -198,5 +199,6 @@ namespace DocumentVerificationSystem.Controllers
             if (userId == null) return null;
             return _db.Users.Find(userId.Value);
         }
+
     }
 }

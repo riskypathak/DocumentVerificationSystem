@@ -1,0 +1,48 @@
+﻿@model IEnumerable<DocumentVerificationSystem.Models.Document>
+
+@{
+    var category = ViewBag.Category as DocumentVerificationSystem.Models.DocumentCategory;
+    var userDocs = ViewBag.UserDocs as List<DocumentVerificationSystem.Models.Document> ?? new List<DocumentVerificationSystem.Models.Document>();
+    Func<string, DocumentVerificationSystem.Models.Document> GetDocument = (title) => userDocs.FirstOrDefault(d => d.Title == title);
+}
+
+<form method="post" enctype="multipart/form-data" action="@Url.Action("UploadDocuments", "Candidate")">
+    <input type="hidden" name="categoryId" value="4" />
+
+    <p><strong>Optional:</strong></p>
+
+    @foreach (var docTitle in new[] { "SC/ST/OBC Certificate", "EWS Certificate", "Minority Certificate", "Disability Certificate" })
+    {
+        var existingDoc = GetDocument(docTitle);
+        <div class="mb-3">
+            <label>@docTitle</label>
+            <input type="hidden" name="docTitles" value="@docTitle" />
+            <input type="file" name="files" class="form-control" />
+
+            @if (existingDoc != null)
+            {
+                <div>
+                    <a href="@existingDoc.FilePath" target="_blank" class="text-primary">@existingDoc.Title</a>
+                        @if (existingDoc.Status == DocumentVerificationSystem.Models.DocumentStatus.Verified)
+                        {
+                            <span class="badge bg-success">Verified</span>
+                        }
+                        else if (existingDoc.Status == DocumentVerificationSystem.Models.DocumentStatus.Rejected)
+                        {
+                            <span class="badge bg-danger">Rejected</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                    @if (!string.IsNullOrEmpty(existingDoc.AdminComments))
+                    {
+                        <span class="text-danger"><strong>⚠ @existingDoc.AdminComments</strong></span>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>

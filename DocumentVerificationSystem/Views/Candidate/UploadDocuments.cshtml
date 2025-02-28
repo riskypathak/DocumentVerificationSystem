@@ -12,7 +12,6 @@
     <a href="@Url.Action("Dashboard", "Candidate")" class="btn btn-outline-secondary">Back</a>
 </div>
 
-<!-- Bootstrap Nav Tabs -->
 <ul class="nav nav-tabs" id="docTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal"
@@ -46,238 +45,73 @@
     </li>
 </ul>
 
-<!-- Tab Panes -->
 <div class="tab-content" id="docTabsContent" style="margin-top:20px;">
-    <!-- Personal Identification Tab -->
+
     <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
-        <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadDocuments", "Candidate")">
-            <input type="hidden" name="categoryId" value="1" />
-            <h3>Personal Identification</h3>
-            <p><strong>Mandatory:</strong></p>
-            <div class="mb-3">
-                <label>Aadhaar Card</label>
-                <input type="hidden" name="docTitles[]" value="Aadhaar Card" />
-                <input type="file" name="files[]" class="form-control" required />
-            </div>
-            <p><strong>Optional:</strong></p>
-            <div class="mb-3">
-                <label>PAN Card</label>
-                <input type="hidden" name="docTitles[]" value="PAN Card" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Passport</label>
-                <input type="hidden" name="docTitles[]" value="Passport" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Voter ID</label>
-                <input type="hidden" name="docTitles[]" value="Voter ID" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Driving License</label>
-                <input type="hidden" name="docTitles[]" value="Driving License" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Birth Certificate</label>
-                <input type="hidden" name="docTitles[]" value="Birth Certificate" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mt-3 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Save/Upload</button>
-            </div>
-        </form>
+        @Html.Partial("_PersonalDocuments")
     </div>
 
-    <!-- Educational Documents Tab -->
     <div class="tab-pane fade" id="educational" role="tabpanel" aria-labelledby="educational-tab">
-        <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadDocuments", "Candidate")">
-            <input type="hidden" name="categoryId" value="2" />
-            <h3>Educational Documents</h3>
-            <p><strong>Mandatory:</strong></p>
-            <div class="mb-3">
-                <label>10th Class Marksheet & Certificate</label>
-                <input type="hidden" name="docTitles[]" value="10th Class" />
-                <input type="file" name="files[]" class="form-control" required />
-            </div>
-            <div class="mb-3">
-                <label>12th Class Marksheet & Certificate</label>
-                <input type="hidden" name="docTitles[]" value="12th Class" />
-                <input type="file" name="files[]" class="form-control" required />
-            </div>
-            <p><strong>Optional:</strong></p>
-            <div class="mb-3">
-                <label>Graduation Degree & Marksheet</label>
-                <input type="hidden" name="docTitles[]" value="Graduation Degree & Marksheet" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Post-Graduation Degree & Marksheet</label>
-                <input type="hidden" name="docTitles[]" value="Post-Graduation Degree & Marksheet" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Diploma/Certifications</label>
-                <input type="hidden" name="docTitles[]" value="Diploma/Certifications" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Transfer Certificate</label>
-                <input type="hidden" name="docTitles[]" value="Transfer Certificate" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Migration Certificate</label>
-                <input type="hidden" name="docTitles[]" value="Migration Certificate" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mt-3 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Save/Upload</button>
-            </div>
-        </form>
+        @Html.Partial("_EducationalDocuments")
     </div>
 
-    <!---Address Proof--->
     <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-        <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadDocuments", "Candidate")">
-            <input type="hidden" name="categoryId" value="3" />
-            <h3>Address Proof</h3>
-            <p><strong>Mandatory:</strong> Aadhaar Card (can reuse if provided above)</p>
-            <div class="mb-3">
-                <label>Aadhaar Card (Reused or Re-upload if needed)</label>
-                <input type="hidden" name="docTitles[]" value="Address Aadhaar" />
-                <input type="file" name="files[]" class="form-control" required />
-            </div>
-            <p><strong>Optional:</strong></p>
-            <div class="mb-3">
-                <label>Passport</label>
-                <input type="hidden" name="docTitles[]" value="Address Passport" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Rent Agreement</label>
-                <input type="hidden" name="docTitles[]" value="Rent Agreement" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Utility Bills (electricity, water, telephone)</label>
-                <input type="hidden" name="docTitles[]" value="Utility Bills" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mt-3 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Save/Upload</button>
-            </div>
-        </form>
+        @Html.Partial("_AddressProof")
     </div>
 
-    <!---Caste/Community Documents --->
     <div class="tab-pane fade" id="caste" role="tabpanel" aria-labelledby="caste-tab">
-        <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadDocuments", "Candidate")">
-            <input type="hidden" name="categoryId" value="4" />
-            <h3>Caste/Community Documents</h3>
-            <p><strong>Optional:</strong></p>
-            <div class="mb-3">
-                <label>SC/ST/OBC Certificate</label>
-                <input type="hidden" name="docTitles[]" value="SC/ST/OBC Certificate" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Economically Weaker Section (EWS) Certificate</label>
-                <input type="hidden" name="docTitles[]" value="EWS Certificate" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Minority Certificate</label>
-                <input type="hidden" name="docTitles[]" value="Minority Certificate" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Disability Certificate</label>
-                <input type="hidden" name="docTitles[]" value="Disability Certificate" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mt-3 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Save/Upload</button>
-            </div>
-        </form>
+        @Html.Partial("_CasteDocuments")
     </div>
 
-    <!---Miscellaneous --->
     <div class="tab-pane fade" id="misc" role="tabpanel" aria-labelledby="misc-tab">
-        <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadDocuments", "Candidate")">
-            <input type="hidden" name="categoryId" value="5" />
-            <h3>Miscellaneous</h3>
-            <p><strong>Optional:</strong></p>
-            <div class="mb-3">
-                <label>Passport-Sized Photographs</label>
-                <input type="hidden" name="docTitles[]" value="Passport-Sized Photographs" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label>Declaration/Affidavit</label>
-                <input type="hidden" name="docTitles[]" value="Declaration/Affidavit" />
-                <input type="file" name="files[]" class="form-control" />
-            </div>
-            <div class="mt-3 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Save/Upload</button>
-            </div>
-        </form>
+        @Html.Partial("_MiscellaneousDocuments")
     </div>
 </div>
 
 <script>
-     document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         var lastCategoryId = "@TempData["LastCategoryId"]";
 
         if (lastCategoryId) {
-            var categoryOrder = [1, 2, 3, 4, 5];
-            var currentIndex = categoryOrder.indexOf(parseInt(lastCategoryId));
+            var categoryMap = {
+                0: "personal",
+                1: "educational",
+                2: "address",
+                3: "caste",
+                4: "misc",
+            };
 
-            if (currentIndex !== -1 && currentIndex < categoryOrder.length - 1) {
-                var nextCategoryId = categoryOrder[currentIndex + 1];
-                var nextTabButton = document.querySelector(`[data-bs-target="#${getTabIdByCategory(nextCategoryId)}"]`);
+            var nextTabId = categoryMap[lastCategoryId];
+            if (nextTabId) {
+                var nextTabButton = document.querySelector(`[data-bs-target="#${nextTabId}"]`);
                 if (nextTabButton) {
                     nextTabButton.click();
                 }
             }
         }
-
-        function getTabIdByCategory(categoryId) {
-            switch (categoryId) {
-                case 1: return "personal";
-                case 2: return "educational";
-                case 3: return "address";
-                case 4: return "caste";
-                case 5: return "misc";
-                default: return "";
-            }
-        }
-
     });
-
 </script>
+
 @* <script> *@
 @*      document.addEventListener("DOMContentLoaded", function () { *@
-@*         var urlParams = new URLSearchParams(window.location.search); *@
+@*         var urlParams = new URLSearchParams(window.location.search);  *@
 @*         var categoryId = urlParams.get("categoryId"); *@
 
 @*         function getTabIdByCategory(categoryId) { *@
-@*             switch (parseInt(categoryId)) { *@
-@*                 case 1: return "personal"; *@
-@*                 case 2: return "educational"; *@
-@*                 case 3: return "address"; *@
-@*                 case 4: return "caste"; *@
-@*                 case 5: return "misc"; *@
-@*                 default: return ""; *@
-@*             } *@
-@*         } *@
-@*         if (categoryId) { *@
-@*             var tabButton = document.querySelector(`[data-bs-target="#${getTabIdByCategory(categoryId)}"]`); *@
-@*             if (tabButton) { *@
-@*                 tabButton.click(); *@
-@*             } *@
-@*         } *@
-@*     }); *@
-@* </script> *@
+@*              switch (parseInt(categoryId)) { *@
+@*                  case 1: return "personal";  *@
+@*                  case 2: return "educational"; *@
+@*                  case 3: return "address"; *@
+@*                 case 4: return "caste";  *@
+@*                  case 5: return "misc";  *@
+@*                  default: return "";  *@
+@*              }  *@
+@*          }  *@
+@*          if (categoryId) { *@
+@*              var tabButton = document.querySelector(`[data-bs-target="#${getTabIdByCategory(categoryId)}"]`); *@
+@*              if (tabButton) { *@
+@*                  tabButton.click(); *@
+@*              }  *@
+@*          }  *@
+@*      }); *@
+@* </script>  *@

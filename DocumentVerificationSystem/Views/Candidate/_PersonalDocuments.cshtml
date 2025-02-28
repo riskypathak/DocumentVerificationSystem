@@ -1,0 +1,59 @@
+﻿@model IEnumerable<DocumentVerificationSystem.Models.Document>
+
+@{
+    var category = ViewBag.Category as DocumentVerificationSystem.Models.DocumentCategory;
+    var userDocs = ViewBag.UserDocs as List<DocumentVerificationSystem.Models.Document> ?? new List<DocumentVerificationSystem.Models.Document>();
+}
+
+<form method="post" enctype="multipart/form-data" action="@Url.Action("UploadDocuments", "Candidate")">
+    <input type="hidden" name="categoryId" value="1" />
+
+    <p><strong>Mandatory:</strong> <span class="text-danger fw-bold">(* indicates mandatory fields)</span></p>
+
+    @for (int i = 0; i < new[] { "Aadhaar Card", "PAN Card", "Passport", "Voter ID", "Driving License", "Birth Certificate" }.Length; i++)
+    {
+        var docTitle = new[] { "Aadhaar Card", "PAN Card", "Passport", "Voter ID", "Driving License", "Birth Certificate" }[i];
+        var existingDoc = userDocs.FirstOrDefault(d => d.Title == docTitle);
+
+        <div class="mb-3">
+            <label>@docTitle</label>
+            @if (docTitle == "Aadhaar Card")
+            {
+                <label class="text-danger bold">*</label> 
+            }
+            <input type="hidden" name="docTitles" value="@docTitle" />
+
+                <input type="file" name="files" class="form-control" @(docTitle == "Aadhaar Card" && existingDoc == null ? "required" : "") />
+
+                @if (existingDoc != null)
+                {
+                    <a href="@existingDoc.FilePath" target="_blank" class="text-primary ms-2">
+                        @existingDoc.Title 
+                    </a>
+                    @if (existingDoc.Status == DocumentVerificationSystem.Models.DocumentStatus.Verified)
+                    {
+                        <span class="badge bg-success">Verified</span>
+                    }
+                    else if (existingDoc.Status == DocumentVerificationSystem.Models.DocumentStatus.Rejected)
+                    {
+                        <span class="badge bg-danger">Rejected</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    }
+                }
+
+            @if (existingDoc?.Status == DocumentVerificationSystem.Models.DocumentStatus.Rejected && !string.IsNullOrEmpty(existingDoc.AdminComments))
+            {
+                <div class="text-danger mt-1">
+                    <strong>⚠ @existingDoc.AdminComments</strong>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="mt-3 d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+</form>

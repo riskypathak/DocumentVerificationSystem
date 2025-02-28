@@ -1,0 +1,39 @@
+﻿@model IEnumerable<DocumentVerificationSystem.Models.Document>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var candidate = ViewBag.Candidate as DocumentVerificationSystem.Models.User;
+}
+<div class="d-flex justify-content-between">
+    <h2>Documents for @candidate?.Email (Roll.No @candidate?.RollNumber)</h2>
+    <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>File</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doc in ViewBag.Documents)
+        {
+            <tr>
+                <td>@doc.Title</td>
+                <td>
+                    <span class="badge @(doc.Status == DocumentVerificationSystem.Models.DocumentStatus.Verified ? "bg-success" : "bg-warning")">
+                        @doc.Status
+                    </span>
+                </td>
+                <td>
+                    <a href="@doc.FilePath" target="_blank" class="btn btn-sm btn-outline-primary">View File</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

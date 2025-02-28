@@ -1,6 +1,7 @@
 ﻿using DocumentVerificationSystem.Data;
 using DocumentVerificationSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocumentVerificationSystem.Controllers
 {
@@ -21,9 +22,20 @@ namespace DocumentVerificationSystem.Controllers
 				return RedirectToAction("Login", "Account");
 			}
 
-			var candidates = _db.Users.Where(u => u.Role == UserRole.Candidate).ToList();
-			return View(candidates);
-		}
+            var candidates = _db.Users
+        .Where(u => u.Role == UserRole.Candidate)
+        .Select(u => new User
+        {
+            Id = u.Id,
+            Email = u.Email,
+            RollNumber = u.RollNumber,
+            IsFinalized = u.IsFinalized,
+            HasUploadedDocuments = _db.Documents.Any(d => d.UserId == u.Id)
+        })
+        .ToList();
+
+            return View(candidates);
+        }
 
 		public IActionResult Review(int candidateId)
 		{
@@ -64,17 +76,46 @@ namespace DocumentVerificationSystem.Controllers
 
 			_db.SaveChanges();
 			TempData["Message"] = "Review saved successfully.";
-			return RedirectToAction("Index");
-		}
+            
+            var documents = _db.Documents.Where(d => d.UserId == candidateId).ToList();
+            var categories = _db.DocumentCategories.ToList();
+
+            ViewBag.Candidate = candidate;
+            ViewBag.Documents = documents;
+            ViewBag.Categories = categories;
+
+            return RedirectToAction("Review", new { candidateId });
+        }
 
 		[HttpPost]
 		public IActionResult FinalizeSubmission(int candidateId)
 		{
-			TempData["Message"] = "Submission decisions finalized. Candidate notified.";
+            var candidate = _db.Users.Find(candidateId);
+            if (candidate == null) return NotFound();
+
+            candidate.IsFinalized = true;
+            _db.SaveChanges();
+
+            TempData["Message"] = "Submission decisions finalized. Candidate notified.";
 			return RedirectToAction("Index");
 		}
 
-		private User? GetCurrentUser()
+        public IActionResult ViewDoc(int candidateId)
+        {
+			var candidate = _db.Users.Find(candidateId);
+			if (candidate == null) return NotFound();
+
+			var documents = _db.Documents.Where(d => d.UserId == candidate.Id).ToList();
+			var categories = _db.DocumentCategories.ToList();
+
+			ViewBag.Candidate = candidate;
+			ViewBag.Documents = documents;
+			ViewBag.Categories = categories;
+
+            return View();
+        }
+
+        private User? GetCurrentUser()
 		{
 			var userId = HttpContext.Session.GetInt32("UserId");
 			if (userId == null) return null;

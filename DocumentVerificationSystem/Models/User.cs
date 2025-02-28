@@ -1,4 +1,6 @@
-﻿namespace DocumentVerificationSystem.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DocumentVerificationSystem.Models
 {
 	public enum UserRole
 	{
@@ -14,5 +16,8 @@
 		public string? RollNumber { get; set; }
 		public DateTime? DateOfBirth { get; set; }
 		public UserRole Role { get; set; }
+		public bool IsFinalized { get; set; }
+        [NotMapped]
+        public bool HasUploadedDocuments { get; set; }
 	}
 }

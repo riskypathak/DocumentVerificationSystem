@@ -74,9 +74,31 @@
 
 @if (documents != null && documents.Any() && documents.All(d => d.Status == DocumentVerificationSystem.Models.DocumentStatus.Verified))
 {
-    <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#finalizeSubmissionModal">
+    <button class="btn btn-success mt-3"
+            data-bs-toggle="modal"
+            data-bs-target="#finalizeSubmissionModal"
+            data-candidate-name="@candidate?.Email"
+            data-candidate-roll="@candidate?.RollNumber"
+            data-verified-count="@documents.Count(d => d.Status == DocumentVerificationSystem.Models.DocumentStatus.Verified)"
+            data-total-documents="@documents.Count"
+            data-candidate-id="@candidate?.Id"
+            onclick="populateFinalizeModal(this)">
         Finalize Submission
     </button>
 }
 
+<script>
+    function populateFinalizeModal(button) {
+        let candidateName = button.getAttribute("data-candidate-name");
+        let candidateRoll = button.getAttribute("data-candidate-roll");
+        let verifiedCount = button.getAttribute("data-verified-count");
+        let totalDocuments = button.getAttribute("data-total-documents");
+        let candidateId = button.getAttribute("data-candidate-id");
 
+        document.getElementById("candidateName").innerText = candidateName;
+        document.getElementById("candidateRoll").innerText = candidateRoll;
+        document.getElementById("verifiedCount").innerText = verifiedCount;
+        document.getElementById("totalDocuments").innerText = totalDocuments;
+        document.getElementById("finalizeCandidateId").value = candidateId;
+    }
+</script>
